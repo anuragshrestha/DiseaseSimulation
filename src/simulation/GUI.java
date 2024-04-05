@@ -31,7 +31,7 @@ public class GUI extends Application {
         Scene scene = new Scene(gridPane, 300, 200);
 
         // Set the scene on the primary stage
-        primaryStage.setTitle("GridPane Example");
+        primaryStage.setTitle("GridPane");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
