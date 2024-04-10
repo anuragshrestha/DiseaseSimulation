@@ -7,7 +7,7 @@ public class FormatAgents {
     private int initialImmune = 0;
 
     /**
-     * Constructor for diseaseSimulation.FormatAgents
+     * Constructor for FormatAgents
      */
     public FormatAgents(){
         formatType = Structures.GRID;
