@@ -62,7 +62,7 @@ public class Manage implements Runnable{
         int rows = formats.getRows();
         transmitDistance = parameters.getInfectionDistance();
 
-        if (agents.size() >= 1){
+        if (!agents.isEmpty()){
             agents.clear();
         }
 
@@ -75,13 +75,13 @@ public class Manage implements Runnable{
         int i;
 
         for (i = 0; i < parameters.getInitialSick() && i < formats.getNumberOfAgents(); i++){
-            Message msg = new Message(MessageType.MOVING, State.SICK);
+            Communication msg = new Communication(CommunicationType.MOVING, AgentState.SICK);
             agents.get(i).transmitMessage(msg);
         }
 
         for (; i < parameters.getInitialSick() + parameters.getInitialImmune() &&
                 i < formats.getNumberOfAgents(); i++){
-            Message msg = new Message(MessageType.MOVING, State.IMMUNE);
+            Communication msg = new Communication(CommunicationType.MOVING, AgentState.IMMUNE);
             agents.get(i).transmitMessage(msg);
         }
     }
@@ -125,7 +125,7 @@ public class Manage implements Runnable{
             for (int j = 0; j < columns; j++){
                 posX = width / (columns + 1) * (j + 1);
                 posY = height / (rows + 1) * (i + 1);
-                otherAgents.add(new Agent(new Point2D(posX, posY), parameters));
+               otherAgents.add(new Agent(new Point2D(posX, posY), parameters));
             }
         }
 
@@ -151,7 +151,7 @@ public class Manage implements Runnable{
         for (int i = 0; i < numberOfAgents; i++){
             posX = (int) (random.nextDouble() * width);
             posY = (int) (random.nextDouble() * height);
-            agents.add(new Agent(new Point2D(posX, posY), parameters));
+           agents.add(new Agent(new Point2D(posX, posY), parameters));
         }
     }
 
@@ -193,13 +193,13 @@ public class Manage implements Runnable{
      * @return
      */
     public boolean isSteady(){
-        State state;
+        AgentState state;
 
         for (Agent agent : agents){
-            state = agent.getHealthState();
-            if (!(state == State.DEAD || state == State.IMMUNE)){
+            state = agent.getHealthCondition();
+            if (!(state == AgentState.DEAD || state == AgentState.IMMUNE)){
                 return false;
-            }else if (state == State.VULNERABLE && !agent.isMoving()){
+            }else if (state == AgentState.VULNERABLE){  // need to fix this
                 return false;
             }
         }
@@ -224,7 +224,7 @@ public class Manage implements Runnable{
                         neigh.add(a);
                     }
                 }
-                agent.setNeighbors(neigh);
+               // agent.setNeighbors(neigh);
             }
             try{
                 Thread.sleep(10);
@@ -232,7 +232,7 @@ public class Manage implements Runnable{
         }
         for (Agent ag : agents){
             try {
-                ag.transmitMessage(new Message(MessageType.STOP));
+                ag.transmitMessage(new Communication(CommunicationType.STOP));
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
