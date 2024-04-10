@@ -1,5 +1,6 @@
 package simulation;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -36,6 +37,13 @@ import java.util.HashMap;
 public class GUI extends Application {
 
 
+    private FormatAgents formatAgent;
+    private Parameter parameter;
+   private Manage manage;
+    private Stage finalStage;
+    private  HashMap<Integer, AgentState> intervalPeriod;
+    private Plot simulationPlot;
+    private  TextArea eventLogs;
     private static int distance;
     private static int incubation;
     private static int sickTime;
@@ -53,6 +61,10 @@ public class GUI extends Application {
     private BorderPane border;
     private TextField configFile;
     private Font font;
+    private Button startButton;
+    private Button rerunButton;
+    private VBox leftPane;
+    private  Label configLabel;
     private final Pane plotChart = new Pane();
 
 
@@ -69,10 +81,18 @@ public class GUI extends Application {
     @Override
     public void start(Stage primaryStage) {
 
+        //Initializing the global objects
+        parameter = new Parameter();
+        manage = new Manage();
+        formatAgent =  new FormatAgents();
+        finalStage  = new Stage();
+        intervalPeriod = new HashMap<>();
+        simulationPlot = new Plot(manage);
+
         primaryStage.setTitle("Disease Simulation");
-        font = Font.font("Times New Roman", FontWeight.BOLD, 18);
+        font = Font.font("Times New Roman", FontWeight.BOLD, 15);
         border = new BorderPane();
-        border.setPadding(new Insets(5,5,5,5));
+        border.setPadding(new Insets(5,50,5,5));
         border.setBackground(Background.fill(Color.PURPLE));
         setLeftPane(); // Set up the left pane GUI elements
         setRightPane();
@@ -96,22 +116,22 @@ public class GUI extends Application {
         graphicsContext.setFill(Color.LIGHTGRAY);
         graphicsContext.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        Label configLabel = new Label("Enter Configuration File");
+        configLabel = new Label("Enter Configuration File");
         configLabel.setFont(font);
         configFile = new TextField();
         configFile.setPromptText("Add a configuration file");
         configFile.setMaxHeight(50);
         configFile.setMaxWidth(150);
-        Button startButton = new Button("Start");
+        startButton = new Button("Start");
         startButton.addEventHandler(MouseEvent.MOUSE_CLICKED,readFile());
         startButton.setMaxWidth(100);
 
         //Additional features to Rerun the program without restarting.
-        Button rerunButton= new Button("Rerun");
+        rerunButton = new Button("Rerun");
         rerunButton.setMaxWidth(100);
 
-        VBox leftPane = new VBox(10);
-        leftPane.setPadding(new Insets(70,0,0,0));
+        leftPane = new VBox(10);
+        leftPane.setPadding(new Insets(50,20,30,20));
         leftPane.setPrefSize(220, 600);
         BorderPane.setMargin(leftPane, new Insets(20,10,20,20));
         CornerRadii radii = new CornerRadii(2);
@@ -128,6 +148,70 @@ public class GUI extends Application {
     }
 
 
+    private void createLeftLabels(){
+
+        //Labels for indicating the information
+        Label sick= new Label("Initial Sick");
+        sick.setFont(font);
+        Label expoDistance = new Label("Exposure Distance");
+        expoDistance.setFont(font);
+        Label incubationPeriod= new Label("Incubation Period");
+        incubationPeriod.setFont(font);
+        Label sickPeriod= new Label("Sickness Time");
+        sickPeriod.setFont(font);
+        Label recoveryProbability= new Label("Recovery Probability");
+        recoveryProbability.setFont(font);
+        Label initialImmune = new Label("Initial Immune");
+        initialImmune.setFont(font);
+
+        //TextFiled to show the chosen value by the user
+
+        TextField sickText = new TextField();
+        TextField exposureText = new TextField();
+        TextField incubationText = new TextField();
+        TextField sicknessText = new TextField();
+        TextField recoveryText = new TextField();
+        TextField immuneText = new TextField();
+
+        //setting the text at the center
+        sickText.setStyle("-fx-alignment: center;");
+        exposureText.setStyle("-fx-alignment: center;");
+        incubationText.setStyle("-fx-alignment: center;");
+        sicknessText.setStyle("-fx-alignment: center;");
+        recoveryText.setStyle("-fx-alignment: center;");
+        immuneText.setStyle("-fx-alignment: center;");
+
+        //setting the max width for each TextField
+        sicknessText.setMaxWidth(90);
+        sickText.setMaxWidth(90);
+        exposureText.setMaxWidth(90);
+        incubationText.setMaxWidth(90);
+        recoveryText.setMaxWidth(90);
+        immuneText.setMaxWidth(90);
+
+
+        incubationText.setText(String.valueOf(parameter.getIncubationTime()));
+        sicknessText.setText(String.valueOf(parameter.getSicknessTime()));
+        recoveryText.setText(String.valueOf(parameter.getRecoveryProb()));
+        sickText.setText(String.valueOf(parameter.getInitialSick()));
+        immuneText.setText(String.valueOf(parameter.getInitialImmune()));
+        exposureText.setText(String.valueOf(parameter.getInfectionDistance()));
+        sickText.setEditable(false);
+        exposureText.setEditable(false);
+        incubationText.setEditable(false);
+        sicknessText.setEditable(false);
+        recoveryText.setEditable(false);
+        immuneText.setEditable(false);
+        leftPane.getChildren().clear();
+        leftPane.getChildren().addAll(expoDistance,exposureText,incubationPeriod,
+                incubationText,sickPeriod,sicknessText,recoveryProbability,recoveryText,
+                sick,sickText,initialImmune,immuneText,configLabel,configFile,
+                startButton,rerunButton);
+
+    }
+
+
+
     /**
      * This method creates a TextArea that shows all the events that
      * happened. It also has a section that displays the graph
@@ -138,7 +222,7 @@ public class GUI extends Application {
     private void setRightPane(){
 
 
-        TextArea eventLogs = new TextArea();
+        eventLogs = new TextArea();
         eventLogs.setPrefSize(300, 400);
         eventLogs.setEditable(false);
 
@@ -224,7 +308,6 @@ public class GUI extends Application {
 
         return _ -> {
 
-            final Parameter PARAM = new Parameter();
             String configName = configFile.getText();
             BufferedReader reader;
             try {
@@ -250,51 +333,63 @@ public class GUI extends Application {
                         int speed = Integer.parseInt(
                                 line.split(" ")[1]
                         );
-                        PARAM.setSpeed(speed);
+                        parameter.setSpeed(speed);
                     }
                     else if (line.contains("initialsick")) {
                         String[] initSick = line.split(" ");
                         initialSick = Integer.parseInt(initSick[1]);
-                        PARAM.setInitialSick(initialSick);
+                        parameter.setInitialSick(initialSick);
                     }
                     else if (line.contains("dimensions")) {
                         String[] dim = line.split(" ");
                         width = Integer.parseInt(dim[1]);
                         height = Integer.parseInt(dim[2]);
-                        PARAM.setMaxX(width);
-                        PARAM.setMaxY(height);
+                        parameter.setMaxX(width);
+                        parameter.setMaxY(height);
                         canvas.setHeight(height);
                         canvas.setWidth(width);
                     }
                     else if (line.contains("exposuredistance")) {
                         String[] expoDistance = line.split(" ");
                         distance = Integer.parseInt(expoDistance[1]);
-                        PARAM.setInfectionDistance(distance);
+                        parameter.setInfectionDistance(distance);
                     }
                     else if (line.contains("incubation")) {
                         String[] incub = line.split(" ");
                         incubation = Integer.parseInt(incub[1]);
-                        PARAM.setIncubationTime(incubation);
+                        parameter.setIncubationTime(incubation);
                     }
                     else if (line.contains("sickness")) {
                         String[] sick = line.split(" ");
                         sickTime = Integer.parseInt(sick[1]);
-                        PARAM.setSicknessTime(sickTime);
+                       parameter.setSicknessTime(sickTime);
                     }
                     else if (line.contains("recover")) {
                         String[] recover = line.split(" ");
                         recovery = Double.parseDouble(recover[1]);
-                        PARAM.setRecoveryProb(recovery);
+                        parameter.setRecoveryProb(recovery);
                     }
                     else if (line.contains("initialimmune")) {
                         String[] immune = line.split(" ");
                         begImmuneNo = Integer.parseInt(immune[1]);
-                        PARAM.setInitialImmune(begImmuneNo);
+                        parameter.setInitialImmune(begImmuneNo);
                     }
                     line = reader.readLine();
                 }
                 reader.close();
 
+                if (parameter.getInitialSick() == -1) { // If not set in file
+                    parameter.setInitialSick(1); // Default for initial sick
+                }
+                if (parameter.getInitialImmune() == -1) { // If not set in file
+                    parameter.setInitialImmune(0); // Default for initial immune
+                }
+
+                if (parameter.getInfectionDistance() == -1) { // If not set in file
+                    parameter.setInitialSick(20); // Default for initial sick
+                }
+
+                finalStage.sizeToScene();
                 int diffHorizontal  = (int) ((canvas.getWidth() - width) / 2);
                 int diffVertical = (int) ((canvas.getHeight() - height) / 2);
                 graphicsContext.clearRect(0, 0, canvas.getWidth(),
@@ -305,6 +400,108 @@ public class GUI extends Application {
             } catch (IOException e) {
                 System.out.println("Error: File not found");
             }
+              createLeftLabels();
+              startProgram();
         };
+
+    }
+
+        private void startProgram(){
+
+
+            begTimer = System.currentTimeMillis();
+
+            try {
+                manage.makeAgents(formatAgent,parameter);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            for (Agent agent : manage.getAgents()){
+                intervalPeriod.put(manage.getAgents().indexOf(agent) + 1, agent.getHealthCondition());
+            }
+
+            AnimationTimer animation = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    int midX = (int) (canvas.getWidth() - width) / 2;
+                    int midY = (int) (canvas.getHeight() - height) / 2;
+
+                    graphicsContext.setFill(Color.WHITE);
+                    graphicsContext.fillRect(midX, midY, width + 10, height);
+
+                    AgentState hState;
+                    Point2D cPosition;
+                    Color fill1 = null;
+
+
+                    for (Agent agent : manage.getAgents()) {
+                        hState = agent.getHealthCondition();
+                        cPosition = agent.getLocation();
+                        if (hState == AgentState.VULNERABLE) {
+                            fill1 = Color.BLUE;
+                        } else if (hState == AgentState.INCUBATING) {
+                            fill1 = Color.YELLOW;
+                        } else if (hState == AgentState.IMMUNE) {
+                            fill1 = Color.GREEN;
+                        } else if (hState == AgentState.SICK) {
+                            fill1 = Color.RED;
+                        } else if (hState == AgentState.DEAD) {
+                            fill1 = Color.BLACK;
+                        }
+
+                        graphicsContext.setFill(fill1);
+                        graphicsContext.fillOval(cPosition.getX() + midX, cPosition.getY() + midY,
+                                8, 8);
+                        String message = getMessage(intervalPeriod, hState, manage, agent);
+                        eventLogs.appendText(message);
+                        manage.incTicks();
+                    }
+                    simulationPlot.updatePlot(manage.getTicks(),num);
+                }
+            };
+            animation.start();
+            manage.start();
+            plotChart.getChildren().add(simulationPlot);
+        }
+
+    /**
+     * This method returns the current system time by converting the current system
+     * time into seconds.
+     * @return currentTime in seconds
+     */
+    public long getCurrentTime() {
+        long currentTime = System.currentTimeMillis();
+        return (currentTime - begTimer) / 1000;
+    }
+
+    /**
+     * This function creates the message for the message log
+     * @param m map of events
+     * @param hs health state
+     * @param am diseaseSimulation.Manager object
+     * @param a current diseaseSimulation.Agent
+     * @return String message
+     */
+    public String getMessage(HashMap<Integer, AgentState> m,
+                             AgentState hs, Manage am, Agent a) {
+        String msg = "";
+        long currTime = getCurrentTime();
+        int i = am.getAgents().indexOf(a);
+        if(hs != AgentState.DEAD) {
+            if(m.containsKey(i)) {
+                if (hs != m.get(i)) {
+                    m.put(i, hs);
+                    msg = STR."Agent \{i} became \{hs} at \{currTime}s\n";
+                }
+            }
+        }
+        else {
+            if(m.containsKey(i) && hs != m.get(i)) {
+                m.put(i, hs);
+                msg = STR."Agent \{i} died at \{currTime}s\n";
+            }
+        }
+        return msg;
     }
 }
