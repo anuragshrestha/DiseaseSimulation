@@ -68,6 +68,8 @@ public class Manage implements Runnable{
 
         switch(formats.getFormatType()){
             case GRID -> makeGrid(columns, rows, parameters);
+
+            //might need to fix here
             case RANDOMGRID -> makeRandomGrid(columns, rows, formats.getNumberOfAgents(), parameters);
             case RANDOM -> makeRandom(formats.getNumberOfAgents(), parameters);
         }
@@ -199,8 +201,10 @@ public class Manage implements Runnable{
             state = agent.getHealthCondition();
             if (!(state == AgentState.DEAD || state == AgentState.IMMUNE)){
                 return false;
-            }else if (state == AgentState.VULNERABLE){  // need to fix this
-                return false;
+            }else {
+                if (state == AgentState.VULNERABLE) {
+                    agent.isMoving();
+                }
             }
         }
         return true;
@@ -212,23 +216,25 @@ public class Manage implements Runnable{
      */
     @Override
     public void run() {
+
         Point2D position;
-        ArrayList<Agent> neigh;
+        ArrayList<Agent> neighbour;
         while (!isSteady()){
             for (Agent agent : agents){
                 position = agent.getLocation();
-                neigh = new ArrayList<>();
+                neighbour = new ArrayList<>();
 
                 for (Agent a : agents){
                     if (!agent.equals(a) && position.distance(a.getLocation()) < transmitDistance){
-                        neigh.add(a);
+                        neighbour.add(a);
                     }
                 }
-               // agent.setNeighbors(neigh);
+               agent.setNeighbors(neighbour);
             }
             try{
                 Thread.sleep(10);
-            }catch (InterruptedException e){}
+            }
+            catch (InterruptedException _){}
         }
         for (Agent ag : agents){
             try {
