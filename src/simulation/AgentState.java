@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 
 /**
  * @author anuragshrestha
- * This class represents the current state of each agents.
+ * This class represents the current state of each agent.
  * Each state is indicated by a unique color.
  */
 public enum AgentState {
