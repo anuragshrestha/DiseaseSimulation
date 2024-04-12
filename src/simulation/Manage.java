@@ -23,7 +23,7 @@ public class Manage implements Runnable{
     }
 
     public Manage(){
-        this(250,250);
+        this(200,200);
     }
 
 
@@ -38,7 +38,7 @@ public class Manage implements Runnable{
 
     /**
      * This function counts current agents on simulation.
-     * @return Number of current agent of particular state of simulation
+     * @return counts of current agent of particular state of simulation
      */
     public EnumMap<AgentState, Integer> getAgentCounts() {
         EnumMap<AgentState, Integer> currentAgent = new EnumMap<>(AgentState.class);
@@ -46,7 +46,8 @@ public class Manage implements Runnable{
             if (!currentAgent.containsKey(agent.getHealthCondition())) {
                 currentAgent.put(agent.getHealthCondition(), 0);
             }
-            currentAgent.put(agent.getHealthCondition(), 1 + currentAgent.get(agent.getHealthCondition()));
+            currentAgent.put(agent.getHealthCondition(), 1 +
+                    currentAgent.get(agent.getHealthCondition()));
         }
         return currentAgent;
     }
@@ -68,9 +69,8 @@ public class Manage implements Runnable{
 
         switch(formats.getFormatType()){
             case GRID -> makeGrid(columns, rows, parameters);
-
-            //might need to fix here
-            case RANDOMGRID -> makeRandomGrid(columns, rows, formats.getNumberOfAgents(), parameters);
+            case RANDOMGRID -> makeRandomGrid(columns, rows,
+                    formats.getNumberOfAgents(), parameters);
             case RANDOM -> makeRandom(formats.getNumberOfAgents(), parameters);
         }
 

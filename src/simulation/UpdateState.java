@@ -2,6 +2,13 @@ package  simulation;
 
 import static java.lang.Thread.sleep;
 
+
+/**
+ * @author anuragshrestha
+ * This class is responsible to update the state of
+ * the agents.
+ */
+
 public class UpdateState implements Runnable{
     private final Agent agent;
     private final AgentState state;

@@ -3,8 +3,6 @@ package simulation;
 public class FormatAgents {
     private Structures formatType;
     private int columns, rows, numberOfAgents;
-    private int initialSick = 1;
-    private int initialImmune = 0;
 
     /**
      * Constructor for FormatAgents
@@ -23,7 +21,7 @@ public class FormatAgents {
 
         if (format.equals("grid")){
             formatType = Structures.GRID;
-        }else if (format.equals("randomGrid")){
+        }else if (format.equals("randomgrid")){
             formatType = Structures.RANDOMGRID;
         }else if (format.equals("random")){
             formatType = Structures.RANDOM;
@@ -85,7 +83,7 @@ public class FormatAgents {
 
     /**
      * returns the formatType of grid.
-     * @return
+     * @return the format type
      */
     public Structures getFormatType(){
         return this.formatType;

@@ -3,7 +3,7 @@ package simulation;
 
 /**
  * @author anuragshrestha
- * This method sets all the parameter needed for the agents.
+ * This class sets all the parameter needed for the agents.
  */
 public class Parameter {
     private int incubationTime, sicknessTime;
@@ -22,6 +22,7 @@ public class Parameter {
         this.incubationTime = 5;
         this.initialSick = 1;
         this.sicknessTime = 10;
+        this.initialImmune = 0;
         this.recoveryProb = 0.95;
         this.infectionDistance = 20;
         this.speed = 100;

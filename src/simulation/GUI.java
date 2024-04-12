@@ -31,7 +31,7 @@ import java.util.HashMap;
  * This class is the main GUI class for the Disease simulation
  * that display all the user interface related things such as
  * the disease simulation, option to input the config file and
- * start the program. It uses a Border pane to set all the
+ * start and rerun the program. It uses a Border pane to set all the
  * features.
  */
 
@@ -108,8 +108,10 @@ public class GUI extends Application {
 
 
     /**
-     * This method creates a text field and buttons where
+     * This method creates text field and buttons where
      * the user can input the file name and start the program.
+     * it also shows the data used in the config file or default
+     * data if the config file don't have one.
      * It sets all the GUI features that will be added to the
      * left pane of the main Border Pane.
      */
@@ -132,7 +134,7 @@ public class GUI extends Application {
         startButton.setMaxWidth(100);
 
         //Additional features to Rerun the program without restarting.
-        rerunButton = new Button("Rerun");
+        rerunButton = new Button("ReStart");
         rerunButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> restartProgram());
         rerunButton.setMaxWidth(100);
 
@@ -154,6 +156,10 @@ public class GUI extends Application {
     }
 
 
+    /**
+     * This method creates labels for the left pane
+     * and add all of them to it.
+     */
     private void createLeftLabels(){
 
         //Labels for indicating the information
@@ -307,7 +313,7 @@ public class GUI extends Application {
     /**
      * This method will be called when the user clicks the submit
      * button. It reads the config file and then stores all the necessary
-     * data from the file.
+     * data from the config file.
      * @return the disease simulation process.
      */
     private EventHandler<MouseEvent> readFile(){
@@ -395,15 +401,15 @@ public class GUI extends Application {
                 }
                 reader.close();
 
-                if (parameter.getInitialSick() == -1) { // If not set in file
-                    parameter.setInitialSick(1); // Default for initial sick
+                if (parameter.getInitialSick() == -1) {
+                    parameter.setInitialSick(1);
                 }
-                if (parameter.getInitialImmune() == -1) { // If not set in file
-                    parameter.setInitialImmune(0); // Default for initial immune
+                if (parameter.getInitialImmune() == -1) {
+                    parameter.setInitialImmune(0);
                 }
 
-                if (parameter.getInfectionDistance() == -1) { // If not set in file
-                    parameter.setInitialSick(20); // Default for initial sick
+                if (parameter.getInfectionDistance() == -1) {
+                    parameter.setInitialSick(20);
                 }
 
                 finalStage.sizeToScene();
@@ -423,7 +429,13 @@ public class GUI extends Application {
 
     }
 
-        private void startProgram(){
+
+    /**
+     * This method will be called after the readFile
+     * method. It displays all the data on the
+     * user Interface.
+     */
+    private void startProgram(){
 
             manageTicks();
 
@@ -471,6 +483,10 @@ public class GUI extends Application {
             plotChart.getChildren().add(simulationPlot);
         }
 
+
+    /**
+     * This method manage the ticks.
+     */
     private void manageTicks() {
         manage.resetTicks();
         begTimer = System.currentTimeMillis();
@@ -488,6 +504,11 @@ public class GUI extends Application {
     }
 
 
+    /**
+     * This method will be called when the user press
+     * the restart button. It will again restart the
+     * whole program using the same data we used before.
+     */
     private void restartProgram(){
 
             eventLogs.clear();
