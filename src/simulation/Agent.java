@@ -86,7 +86,8 @@ public class Agent implements Runnable {
         synchronized (neighbourAt){
             for (Agent a : neighbors){
                 if (a.getHealthCondition() == AgentState.VULNERABLE){
-                    a.transmitMessage(new Communication(CommunicationType.MOVING, AgentState.INCUBATING));
+                    a.transmitMessage(new Communication(CommunicationType.MOVING,
+                            AgentState.INCUBATING));
                 }
             }
         }
