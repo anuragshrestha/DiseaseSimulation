@@ -2,6 +2,7 @@ package simulation;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -97,6 +98,10 @@ public class GUI extends Application {
         setLeftPane(); // Set up the left pane GUI elements
         setRightPane();
         Scene scene = new Scene(border, 1200, 700);
+        primaryStage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
+        });
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -128,6 +133,7 @@ public class GUI extends Application {
 
         //Additional features to Rerun the program without restarting.
         rerunButton = new Button("Rerun");
+        rerunButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> restartProgram());
         rerunButton.setMaxWidth(100);
 
         leftPane = new VBox(10);
@@ -319,15 +325,25 @@ public class GUI extends Application {
                         row = Integer.parseInt(random[1]);
                         col = Integer.parseInt(random[2]);
                         num = Integer.parseInt(random[3]);
+                        formatAgent.setFormatType("randomgrid");
+                        formatAgent.setRows(row);
+                        formatAgent.setColumns(col);
+                        formatAgent.setNumberOfAgents(num);
                     }
                     else if (line.contains("random")) {
                         num = Integer.parseInt(line.split(" ")[1]);
+                        formatAgent.setFormatType("random");
+                        formatAgent.setNumberOfAgents(num);
                     }
                     else if (line.contains("grid")) {
                         String[] grid = line.split(" ");
                         row = Integer.parseInt(grid[1]);
                         col = Integer.parseInt(grid[2]);
                         num = row * col;
+                        formatAgent.setFormatType("grid");
+                        formatAgent.setRows(row);
+                        formatAgent.setColumns(col);
+                        formatAgent.setNumberOfAgents(num);
                     }
                     else if (line.contains("move")) {
                         int speed = Integer.parseInt(
@@ -344,6 +360,7 @@ public class GUI extends Application {
                         String[] dim = line.split(" ");
                         width = Integer.parseInt(dim[1]);
                         height = Integer.parseInt(dim[2]);
+                        manage.setDimension(width,height);
                         parameter.setMaxX(width);
                         parameter.setMaxY(height);
                         canvas.setHeight(height);
@@ -408,18 +425,7 @@ public class GUI extends Application {
 
         private void startProgram(){
 
-
-            begTimer = System.currentTimeMillis();
-
-            try {
-                manage.makeAgents(formatAgent,parameter);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            for (Agent agent : manage.getAgents()){
-                intervalPeriod.put(manage.getAgents().indexOf(agent) + 1, agent.getHealthCondition());
-            }
+            manageTicks();
 
             AnimationTimer animation = new AnimationTimer() {
                 @Override
@@ -464,6 +470,78 @@ public class GUI extends Application {
             manage.start();
             plotChart.getChildren().add(simulationPlot);
         }
+
+    private void manageTicks() {
+        manage.resetTicks();
+        begTimer = System.currentTimeMillis();
+
+        try {
+            manage.makeAgents(formatAgent,parameter);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        for (Agent agent : manage.getAgents()){
+            intervalPeriod.put(manage.getAgents().indexOf(agent) + 1, agent.getHealthCondition());
+        }
+    }
+
+
+    private void restartProgram(){
+
+            eventLogs.clear();
+            plotChart.getChildren().clear();
+            simulationPlot.resetPlot();
+             manageTicks();
+
+        AnimationTimer animation = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+
+                    var midX = (int) (canvas.getWidth() - width) / 2;
+                    var midY = (int) (canvas.getHeight() - height) / 2;
+
+                    graphicsContext.setFill(Color.WHITE);
+                    graphicsContext.fillRect(midX, midY, width + 10, height);
+
+                    AgentState hState;
+                    Point2D cPosition;
+                    Color fill1 = null;
+
+
+                    for (Agent ags : manage.getAgents()) {
+                        hState = ags.getHealthCondition();
+                        cPosition = ags.getLocation();
+                        if (hState == AgentState.VULNERABLE) {
+                            fill1 = Color.BLUE;
+                        } else if (hState == AgentState.INCUBATING) {
+                            fill1 = Color.YELLOW;
+                        } else if (hState == AgentState.IMMUNE) {
+                            fill1 = Color.GREEN;
+                        } else if (hState == AgentState.SICK) {
+                            fill1 = Color.RED;
+                        } else if (hState == AgentState.DEAD) {
+                            fill1 = Color.BLACK;
+                        }
+
+                        graphicsContext.setFill(fill1);
+                        graphicsContext.setFill(fill1);
+                        graphicsContext.fillOval(cPosition.getX() + midX, cPosition.getY() + midY,
+                                8, 8);
+                        String message = getMessage(intervalPeriod, hState, manage, ags);
+                        eventLogs.appendText(message);
+                        manage.incTicks();
+                    }
+                    simulationPlot.updatePlot(manage.getTicks(),num);
+                }
+            };
+            animation.start();
+            manage.start();
+            plotChart.getChildren().add(simulationPlot);
+
+        }
+
 
     /**
      * This method returns the current system time by converting the current system
