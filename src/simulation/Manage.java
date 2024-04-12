@@ -1,3 +1,9 @@
+
+
+/**
+ * @author suman
+ * This calss is to manage the diseases and it's spreading
+ */
 package simulation;
 
 

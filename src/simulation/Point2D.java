@@ -1,3 +1,8 @@
+
+/**
+ * @author suman
+ * This calss is about points used for determing the points in simulation
+ */
 package simulation;
 
 public class Point2D {

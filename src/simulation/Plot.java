@@ -5,6 +5,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Circle;
 import java.util.EnumMap;
 
+/** @author suman:
+ * this class is to make the graph at x an y axis
+ */
+
 /**
  * This class creates the simulation plot.
  */

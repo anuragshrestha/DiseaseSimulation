@@ -1,3 +1,7 @@
+/**
+ * @author suman
+ * This calss is default for the agents
+ */
 package simulation;
 
 public class FormatAgents {

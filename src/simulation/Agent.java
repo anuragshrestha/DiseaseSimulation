@@ -1,9 +1,15 @@
+/**
+ * @author suman
+ * This calss is about the agent
+ */
 package simulation;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
+
+
 
 public class Agent implements Runnable {
 
