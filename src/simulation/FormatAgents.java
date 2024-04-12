@@ -10,7 +10,9 @@ public class FormatAgents {
      * Constructor for FormatAgents
      */
     public FormatAgents(){
-        formatType = Structures.GRID;
+
+        this.formatType = Structures.RANDOM;
+        numberOfAgents = 100;
     }
 
     /**
@@ -18,6 +20,7 @@ public class FormatAgents {
      * @param format formatType
      */
     public void setFormatType(String format){
+
         if (format.equals("grid")){
             formatType = Structures.GRID;
         }else if (format.equals("randomGrid")){
@@ -25,7 +28,7 @@ public class FormatAgents {
         }else if (format.equals("random")){
             formatType = Structures.RANDOM;
         }else{
-            formatType = Structures.GRID;
+            formatType = Structures.RANDOM;
         }
     }
 
