@@ -14,13 +14,16 @@ public class Parameter {
     private int speed;
     private boolean move;
 
+
     /**
      * Constructor for this class.
      */
     public Parameter(){
         this.incubationTime = 5;
+        this.initialSick = 1;
         this.sicknessTime = 10;
         this.recoveryProb = 0.95;
+        this.infectionDistance = 20;
         this.speed = 100;
         this.maxX = 200;
         this.maxY = 200;
