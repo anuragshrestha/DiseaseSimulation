@@ -1,53 +1,70 @@
-package simulation;
+ package simulation;
 
-import javafx.scene.Parent;
+/*
+ * @author anurag shrestha
+ * This class is responsible to plot the graph of the agents
+ * over the time
+ */
+
+ import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import java.util.EnumMap;
+import java.util.Map;
 
-/** @author suman:
- * this class is to make the graph at x an y axis
- */
-
-/**
- * This class creates the simulation plot.
- */
 public class Plot extends Parent {
 
-    private final Manage mg;
-    private Pane graphPlot;
+    private final Manage manage;
+    private Pane graphPane;
+    private Map<AgentState, double[]> stateLastPositions;
+    private boolean simulationRunning = true;
 
-    /**
-     * @param mg manager
-     */
-    public Plot(Manage mg) {
-        this.mg = mg;
-        resetPlot();
+    public Plot(Manage manage) {
+        this.manage = manage;
+        this.stateLastPositions = new EnumMap<>(AgentState.class);
+        initializePlot();
     }
 
-    /**
-     * Updates the simulation plot
-     * @param ticks each step of simulation
-     */
+    private void drawLine(AgentState state, double x1, double y1, double x2, double y2) {
+        Line line = new Line(x1, y1, x2, y2);
+        line.setStroke(state.getColor());
+        graphPane.getChildren().add(line);
+    }
+
     public void updatePlot(int ticks, int num) {
-        EnumMap<AgentState, Integer> currentAgentsCount = mg.getAgentCounts();
-
-        for (AgentState state : AgentState.values()) {
-            if (currentAgentsCount.containsKey(state)) {
-                Circle c = new Circle(2, state.getColor());
-                c.setTranslateX(ticks/(num*10.0));
-                c.setTranslateY(200 - currentAgentsCount.get(state));
-                graphPlot.getChildren().add(c);
-            }
+        if (!simulationRunning) {
+            return;
         }
+
+        double plotHeight = graphPane.getHeight();
+        double plotWidth = graphPane.getWidth();
+
+        EnumMap<AgentState, Integer> currentAgentCounts = manage.getAgentCounts();
+
+        currentAgentCounts.forEach((state, count) -> {
+
+            double newX = ticks / (num * 10.0);
+            double newY = plotHeight - (count / (double) num) * plotHeight;
+            double[] lastPos = stateLastPositions.get(state);
+            if (lastPos != null) {
+                drawLine(state, lastPos[0], lastPos[1], newX, newY);
+            }
+
+            stateLastPositions.put(state, new double[]{newX, newY});
+        });
     }
 
-    /**
-     * Resets the simulation plot
-     */
-    public void resetPlot() {
+
+
+    private void initializePlot() {
         getChildren().clear();
-        graphPlot = new Pane();
-        getChildren().add(graphPlot);
+        graphPane = new Pane();
+        getChildren().add(graphPane);
+        stateLastPositions.clear();
+    }
+
+    public void resetPlot() {
+        initializePlot();
+        simulationRunning = true;
     }
 }
