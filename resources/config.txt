@@ -1,4 +1,4 @@
-randomgrid 30 30 120
+random 100
 exposuredistance 70
 incubation 3
 sickness 7
@@ -6,5 +6,4 @@ initialsick 10
 recover 0.3
 move 100
 dimensions 500 500
-grid 30 30
 initialimmune 5
