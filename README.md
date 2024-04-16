@@ -12,8 +12,8 @@ data such as exposureDistance, sickness time, incubation time will be provided i
 
 ## Note to the grader:
 I had to make some minor changes because my code was in Java 21 and nick told me to make it on Java 20. Also, I was
-having issue with my jar file so nick fixed it. He said that this minor changes will not reduce the points as I 
-pushed all of my code before the due date.
+having issue with my jar file so nick fixed it, but it won't run from the terminal, it will run by running the jar file.
+He said that this minor changes will not reduce the points as I pushed all of my code before the due date.
 
 ## Instructions to run the program
 
