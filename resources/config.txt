@@ -7,3 +7,5 @@ recover 0.3
 move 100
 dimensions 500 500
 initialimmune 5
+grid 30 30
+randomgrid 30 30 100

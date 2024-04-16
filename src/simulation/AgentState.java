@@ -1,5 +1,4 @@
 package simulation;
-
 import javafx.scene.paint.Color;
 
 /**

@@ -130,7 +130,7 @@ public class GUI extends Application {
         configFile.setMaxHeight(50);
         configFile.setMaxWidth(150);
         startButton = new Button("Start");
-        startButton.addEventHandler(MouseEvent.MOUSE_CLICKED,readFile());
+        startButton.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> readFile());
         startButton.setMaxWidth(100);
 
         //Additional features to Rerun the program without restarting.
@@ -316,9 +316,9 @@ public class GUI extends Application {
      * data from the config file.
      * @return the disease simulation process.
      */
-    private EventHandler<MouseEvent> readFile(){
+    private void readFile(){
 
-        return _ -> {
+     //   return _ -> {
 
             String configName = configFile.getText();
             BufferedReader reader;
@@ -425,7 +425,7 @@ public class GUI extends Application {
             }
               createLeftLabels();
               startProgram();
-        };
+       // };
 
     }
 
@@ -591,14 +591,14 @@ public class GUI extends Application {
             if(m.containsKey(i)) {
                 if (hs != m.get(i)) {
                     m.put(i, hs);
-                    msg = STR."Agent \{i} became \{hs} at \{currTime}s\n";
+                    msg = String.format("Agent %d became %s at %ds\n", i, hs, currTime);
                 }
             }
         }
         else {
             if(m.containsKey(i) && hs != m.get(i)) {
                 m.put(i, hs);
-                msg = STR."Agent \{i} died at \{currTime}s\n";
+                msg = String.format("Agent %d died at %ds\n", i, currTime);
             }
         }
         return msg;

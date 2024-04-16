@@ -240,7 +240,7 @@ public class Manage implements Runnable{
             try{
                 Thread.sleep(10);
             }
-            catch (InterruptedException _){}
+            catch (InterruptedException exception){}
         }
         for (Agent ag : agents){
             try {

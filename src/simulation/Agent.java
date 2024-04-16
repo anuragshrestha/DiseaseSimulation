@@ -53,7 +53,7 @@ public class Agent implements Runnable {
         lastWander = System.currentTimeMillis();
         agentNumber += 1;
         num = agentNumber;
-        name = STR."DiseaseSimulation\{agentNumber}";
+        name = "DiseaseSimulation" + agentNumber;
         maxX = parameters.getMaxX();
         maxY = parameters.getMaxY();
     }
