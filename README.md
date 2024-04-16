@@ -9,6 +9,12 @@ be sick at first. Those sick agents when comes in contact with non-sick agents -
 to transmit the disease. After being sick, the agent might die or recover depending on the recover probability. All the 
 data such as exposureDistance, sickness time, incubation time will be provided in a configuration file. 
 
+
+## Note to the grader:
+I had to make some minor changes because my code was in Java 21 and nick told me to make it on Java 20. Also, I was
+having issue with my jar file so nick fixed it. He said that this minor changes will not reduce the points as I 
+pushed all of my code before the due date.
+
 ## Instructions to run the program
 
 1) At first, run the Jar file named `DiseaseSimulation_ashrestha_skafle.jar`. It will ask for a configuration file which
