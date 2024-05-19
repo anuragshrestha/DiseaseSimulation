@@ -1,4 +1,4 @@
-## Welcome to our disease simulation project
+## Welcome to my disease simulation project
 
 
 ## Introduction
@@ -8,12 +8,6 @@ be human, animals, birds and many more. Initially there will be certain agents a
 be sick at first. Those sick agents when comes in contact with non-sick agents - agents need to be certain distance close- 
 to transmit the disease. After being sick, the agent might die or recover depending on the recover probability. All the 
 data such as exposureDistance, sickness time, incubation time will be provided in a configuration file. 
-
-
-## Note to the grader:
-I had to make some minor changes because my code was in Java 21 and nick told me to make it on Java 20. Also, I was
-having issue with my jar file so nick fixed it, but it won't run from the terminal, it will run by running the jar file.
-He said that this minor changes will not reduce the points as I pushed all of my code before the due date.
 
 ## Instructions to run the program
 
@@ -34,7 +28,7 @@ vulnerable if the exposure distance was not enough.
 7) We can then restart the whole program again and again using the same information we used before.
 
 
-## Additional four features in the program
+## Additional features in the program
 
 1) `Restart`: There is a "Restart" button that lets you start the simulation over again using the same information
 we used before.
@@ -59,13 +53,5 @@ randomgrid.
 3) If you type the wrong name for the configuration file, you'll get an error message.
 4) If you don't provide any initial agents location then it will use the default random location with 100 agents.
 
-
-## Which student worked in which part of the program
-
-I `Anurag Shrestha` mainly worked on the GUI section of the program. I design and developed the user interface.
-I developed the communication class that helps to communicate between the agents over the time. I coded the parameter
-class that sets the parameter of the disease simulation. I also did the update state part that is responsible for 
-the update of the agents. `Suman kafle` mostly did the remaining backend sections such as agent handling. He coded 
-the sections that handles the agents and formats the agents. He managed all the disease simulation process that starta
-the simulation process, tracks it and then stops it. 
+## I created this project for one of my classes - `Design of Large programs using Object Oriented Programming`
 
