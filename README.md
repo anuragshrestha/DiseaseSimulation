@@ -3,8 +3,7 @@
 
 ## Introduction
 
-This is a Disease simulation program that is designed to simulate the disease between the agents. Here agents can
-be human, animals, birds and many more. Initially there will be certain agents and among them few of the agents will 
+This is a Disease simulation program that is designed to simulate the disease between the humans. Initially there will be certain agents and among them few of the agents will 
 be sick at first. Those sick agents when comes in contact with non-sick agents - agents need to be certain distance close- 
 to transmit the disease. After being sick, the agent might die or recover depending on the recover probability. All the 
 data such as exposureDistance, sickness time, incubation time will be provided in a configuration file. 
